@@ -8,13 +8,13 @@ import retrofit2.Response
 
 class MainRepository {
 
-    fun createFakeBooks(): List<Book> {
-        return listOf<Book>(
-            Book("Title 1", "Author 1"),
-            Book("Title 2", "Author 2"),
-            Book("Title 3", "Author 3"),
-        )
-    }
+//    fun createFakeBooks(): List<Book> {
+//        return listOf<Book>(
+//            Book("Title 1", "Author 1"),
+//            Book("Title 2", "Author 2"),
+//            Book("Title 3", "Author 3"),
+//        )
+//    }
 
 //    fun getBooksApi(): Unit {
 //        ApiService.service.getBooks().enqueue(object : Callback<BookBodyResponse> {

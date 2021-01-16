@@ -28,7 +28,8 @@ class BooksViewModel(private val repository: MainRepository) : ViewModel() {
                         for (result in bookBodyResponse.bookResults){
                             val book = Book(
                                 title = result.bookDetails[0].title,
-                                author = result.bookDetails[0].author
+                                author = result.bookDetails[0].author,
+                                description = result.bookDetails[0].description
                             )
 
                             books.add(book)
