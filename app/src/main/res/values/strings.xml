@@ -7,4 +7,5 @@
     <!--    Book Details Activity-->
     <string name="book_details_title_label">Title</string>
     <string name="book_details_description_label">Description</string>
+    <string name="books_details_title">Book Details</string>
 </resources>

@@ -3,10 +3,11 @@ package com.example.nybooks.presentation.details
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import com.example.nybooks.R
 import com.example.nybooks.databinding.ActivityBookDetailsBinding
+import com.example.nybooks.presentation.base.BaseActivity
 
-class BookDetailsActivity : AppCompatActivity() {
+class BookDetailsActivity : BaseActivity() {
     private lateinit var binding: ActivityBookDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,6 +15,8 @@ class BookDetailsActivity : AppCompatActivity() {
         binding = ActivityBookDetailsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        setupToolbar(binding.toolbarMain.toolbarMain, R.string.books_details_title, true)
 
         binding.bookDetailsTitle.text = intent.getStringExtra(EXTRA_TITLE)
         binding.bookDetailsDescription.text = intent.getStringExtra(EXTRA_DESCRIPTION)
