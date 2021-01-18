@@ -3,6 +3,9 @@
 
     <!--     Books Activity -->
     <string name="books_title">Books</string>
+    <string name="books_error_401">Não autorizado</string>
+    <string name="books_error_400_generic">Erro não tratado</string>
+    <string name="books_error_500_generic">Erro catastrófico</string>
 
     <!--    Book Details Activity-->
     <string name="book_details_title_label">Title</string>
