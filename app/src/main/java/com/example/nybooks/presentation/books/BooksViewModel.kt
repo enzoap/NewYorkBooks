@@ -4,52 +4,33 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.nybooks.R
-import com.example.nybooks.data.ApiService
+import com.example.nybooks.data.BooksResult
 import com.example.nybooks.data.model.Book
-import com.example.nybooks.data.response.BookBodyResponse
-import com.example.nybooks.data.response.MainRepository
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.nybooks.data.repository.BooksRepository
 
-@Suppress("UNCHECKED_CAST")
-class BooksViewModel(private val repository: MainRepository) : ViewModel() {
+class BooksViewModel(private val dataSource: BooksRepository) : ViewModel() {
     val booksLiveData : MutableLiveData<List<Book>> = MutableLiveData()
     val viewFlipperLiveData : MutableLiveData<Pair<Int, Int?>> = MutableLiveData()
 
     fun getBooks(){
-        ApiService.service.getBooks().enqueue(object : Callback<BookBodyResponse> {
-            override fun onResponse(
-                call: Call<BookBodyResponse>,
-                response: Response<BookBodyResponse>
-            ) {
-                when {
-                    response.isSuccessful -> {
-                        val books: MutableList<Book> = mutableListOf()
-
-                        response.body()?.let { bookBodyResponse ->
-                            for (result in bookBodyResponse.bookResults){
-                                val book = result.bookDetails[0].getBookModel()
-                                books.add(book)
-                            }
-                        }
-                        booksLiveData.value = books
-                        viewFlipperLiveData.value = Pair(VIEW_FLIPPER_BOOKS, null)
-                    }
-                    response.code() == 401 -> {
+        dataSource.getBooks { result: BooksResult ->
+            when(result) {
+                is BooksResult.Sucess -> {
+                    booksLiveData.value = result.books
+                    viewFlipperLiveData.value = Pair(VIEW_FLIPPER_BOOKS, null)
+                }
+                is BooksResult.ApiError -> {
+                    if (result.statusCode == 401) {
                         viewFlipperLiveData.value = Pair(VIEW_FLIPPER_ERROR, R.string.books_error_401)
-                    }
-                    else -> {
+                    }else {
                         viewFlipperLiveData.value = Pair(VIEW_FLIPPER_ERROR, R.string.books_error_400_generic)
                     }
                 }
+                is BooksResult.ServerError -> {
+                    viewFlipperLiveData.value = Pair(VIEW_FLIPPER_ERROR, R.string.books_error_500_generic)
+                }
             }
-
-            override fun onFailure(call: Call<BookBodyResponse>, t: Throwable) {
-                viewFlipperLiveData.value = Pair(VIEW_FLIPPER_ERROR, R.string.books_error_500_generic)
-            }
-
-        })
+        }
     }
 
     companion object {
@@ -57,11 +38,12 @@ class BooksViewModel(private val repository: MainRepository) : ViewModel() {
         private const val VIEW_FLIPPER_ERROR = 2
     }
 
+    @Suppress("UNCHECKED_CAST")
     class MainViewModelFactory(
-        private val repository: MainRepository
+        private val dataSource: BooksRepository
     ) : ViewModelProvider.Factory{
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return BooksViewModel(repository) as T
+            return BooksViewModel(dataSource) as T
         }
 
     }
